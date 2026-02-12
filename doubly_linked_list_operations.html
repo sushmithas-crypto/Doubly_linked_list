@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doubly Linked List Operations - Visual Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 2.5em;
+            margin-bottom: 50px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .operation-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .operation-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        
+        .operation-title {
+            font-size: 1.8em;
+            color: #667eea;
+            margin-bottom: 20px;
+            border-left: 5px solid #667eea;
+            padding-left: 15px;
+        }
+        
+        .diagram-container {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 30px;
+            margin-top: 20px;
+        }
+        
+        svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .node {
+            fill: white;
+            stroke: #667eea;
+            stroke-width: 3;
+        }
+        
+        .node-data {
+            fill: #667eea;
+            font-weight: bold;
+            font-size: 18px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .pointer-text {
+            fill: #764ba2;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .arrow {
+            stroke: #764ba2;
+            stroke-width: 2;
+            fill: none;
+            marker-end: url(#arrowhead);
+        }
+        
+        .new-node {
+            fill: #ffeaa7;
+            stroke: #fdcb6e;
+            stroke-width: 3;
+        }
+        
+        .deleted-node {
+            fill: #ff7675;
+            stroke: #d63031;
+            stroke-width: 3;
+            opacity: 0.6;
+        }
+        
+        .highlight-arrow {
+            stroke: #00b894;
+            stroke-width: 3;
+            stroke-dasharray: 5,5;
+            animation: dash 1s linear infinite;
+        }
+        
+        @keyframes dash {
+            to {
+                stroke-dashoffset: -10;
+            }
+        }
+        
+        .label {
+            fill: #2d3436;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .position-label {
+            fill: #e17055;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .step-description {
+            background: #e8f4f8;
+            border-left: 4px solid #0984e3;
+            padding: 15px 20px;
+            margin-top: 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        
+        .complexity {
+            background: #fff5e6;
+            border-left: 4px solid #ff9800;
+            padding: 15px 20px;
+            margin-top: 15px;
+            border-radius: 5px;
+        }
+        
+        .complexity strong {
+            color: #e65100;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Doubly Linked List Operations</h1>
+        
+        <!-- Operation 1: Insert at Position -->
+        <div class="operation-card">
+            <h2 class="operation-title">1. Insert an Element at a Given Position</h2>
+            
+            <div class="diagram-container">
+                <svg viewBox="0 0 900 400" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <polygon points="0 0, 10 3, 0 6" fill="#764ba2"/>
+                        </marker>
+                        <marker id="arrowhead-green" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <polygon points="0 0, 10 3, 0 6" fill="#00b894"/>
+                        </marker>
+                    </defs>
+                    
+                    <!-- Title -->
+                    <text x="450" y="25" text-anchor="middle" class="label" font-size="18">Original List</text>
+                    
+                    <!-- Original List -->
+                    <!-- Node 0: Data = 10 -->
+                    <rect x="50" y="50" width="120" height="80" rx="10" class="node"/>
+                    <rect x="60" y="60" width="30" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <rect x="100" y="60" width="60" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <text x="75" y="95" text-anchor="middle" class="pointer-text">prev</text>
+                    <text x="130" y="95" text-anchor="middle" class="node-data">10</text>
+                    
+                    <!-- Position 0 -->
+                    <text x="110" y="150" text-anchor="middle" class="position-label">pos 0</text>
+                    
+                    <!-- Node 1: Data = 20 -->
+                    <rect x="240" y="50" width="120" height="80" rx="10" class="node"/>
+                    <rect x="250" y="60" width="30" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <rect x="290" y="60" width="60" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <text x="265" y="95" text-anchor="middle" class="pointer-text">prev</text>
+                    <text x="320" y="95" text-anchor="middle" class="node-data">20</text>
+                    
+                    <!-- Position 1 -->
+                    <text x="300" y="150" text-anchor="middle" class="position-label">pos 1</text>
+                    
+                    <!-- Node 2: Data = 30 -->
+                    <rect x="430" y="50" width="120" height="80" rx="10" class="node"/>
+                    <rect x="440" y="60" width="30" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <rect x="480" y="60" width="60" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <text x="455" y="95" text-anchor="middle" class="pointer-text">prev</text>
+                    <text x="510" y="95" text-anchor="middle" class="node-data">30</text>
+                    
+                    <!-- Position 2 -->
+                    <text x="490" y="150" text-anchor="middle" class="position-label">pos 2</text>
+                    
+                    <!-- Forward arrows -->
+                    <path d="M 170 90 L 230 90" class="arrow" marker-end="url(#arrowhead)"/>
+                    <path d="M 360 90 L 420 90" class="arrow" marker-end="url(#arrowhead)"/>
+                    
+                    <!-- Backward arrows -->
+                    <path d="M 240 90 L 180 90" class="arrow" marker-end="url(#arrowhead)"/>
+                    <path d="M 430 90 L 370 90" class="arrow" marker-end="url(#arrowhead)"/>
+                    
+                    <!-- NULL pointers -->
+                    <text x="30" y="95" text-anchor="middle" class="pointer-text">NULL</text>
+                    <text x="570" y="95" text-anchor="middle" class="pointer-text">NULL</text>
+                    
+                    <!-- After Insertion Title -->
+                    <text x="450" y="200" text-anchor="middle" class="label" font-size="18">After Inserting 15 at Position 1</text>
+                    
+                    <!-- After List -->
+                    <!-- Node 0: Data = 10 -->
+                    <rect x="20" y="225" width="120" height="80" rx="10" class="node"/>
+                    <rect x="30" y="235" width="30" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <rect x="70" y="235" width="60" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <text x="45" y="270" text-anchor="middle" class="pointer-text">prev</text>
+                    <text x="100" y="270" text-anchor="middle" class="node-data">10</text>
+                    
+                    <!-- New Node: Data = 15 -->
+                    <rect x="200" y="225" width="120" height="80" rx="10" class="new-node"/>
+                    <rect x="210" y="235" width="30" height="60" rx="5" fill="#ffe5b4" stroke="#fdcb6e"/>
+                    <rect x="250" y="235" width="60" height="60" rx="5" fill="#ffe5b4" stroke="#fdcb6e"/>
+                    <text x="225" y="270" text-anchor="middle" class="pointer-text">prev</text>
+                    <text x="280" y="270" text-anchor="middle" class="node-data" fill="#d35400">15</text>
+                    <text x="260" y="320" text-anchor="middle" fill="#d35400" font-weight="bold">NEW</text>
+                    
+                    <!-- Node 1: Data = 20 -->
+                    <rect x="380" y="225" width="120" height="80" rx="10" class="node"/>
+                    <rect x="390" y="235" width="30" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <rect x="430" y="235" width="60" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <text x="405" y="270" text-anchor="middle" class="pointer-text">prev</text>
+                    <text x="460" y="270" text-anchor="middle" class="node-data">20</text>
+                    
+                    <!-- Node 2: Data = 30 -->
+                    <rect x="560" y="225" width="120" height="80" rx="10" class="node"/>
+                    <rect x="570" y="235" width="30" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <rect x="610" y="235" width="60" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <text x="585" y="270" text-anchor="middle" class="pointer-text">prev</text>
+                    <text x="640" y="270" text-anchor="middle" class="node-data">30</text>
+                    
+                    <!-- Forward arrows -->
+                    <path d="M 140 265 L 190 265" class="highlight-arrow" marker-end="url(#arrowhead-green)"/>
+                    <path d="M 320 265 L 370 265" class="highlight-arrow" marker-end="url(#arrowhead-green)"/>
+                    <path d="M 500 265 L 550 265" class="arrow" marker-end="url(#arrowhead)"/>
+                    
+                    <!-- Backward arrows -->
+                    <path d="M 200 265 L 150 265" class="highlight-arrow" marker-end="url(#arrowhead-green)"/>
+                    <path d="M 380 265 L 330 265" class="highlight-arrow" marker-end="url(#arrowhead-green)"/>
+                    <path d="M 560 265 L 510 265" class="arrow" marker-end="url(#arrowhead)"/>
+                    
+                    <!-- NULL pointers -->
+                    <text x="0" y="270" text-anchor="middle" class="pointer-text">NULL</text>
+                    <text x="700" y="270" text-anchor="middle" class="pointer-text">NULL</text>
+                </svg>
+            </div>
+            
+            <div class="step-description">
+                <strong>Steps:</strong><br>
+                1. Traverse to the node at position 1 (current node with data 20)<br>
+                2. Create a new node with data 15<br>
+                3. Set new node's <code>prev</code> pointer to point to node at position 0<br>
+                4. Set new node's <code>next</code> pointer to point to current node at position 1<br>
+                5. Update the <code>next</code> pointer of node at position 0 to point to the new node<br>
+                6. Update the <code>prev</code> pointer of node at position 1 to point to the new node
+            </div>
+            
+            <div class="complexity">
+                <strong>Time Complexity:</strong> O(n) - where n is the position<br>
+                <strong>Space Complexity:</strong> O(1)
+            </div>
+        </div>
+        
+        <!-- Operation 2: Delete at Position -->
+        <div class="operation-card">
+            <h2 class="operation-title">2. Delete an Element at a Given Position</h2>
+            
+            <div class="diagram-container">
+                <svg viewBox="0 0 900 400" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Title -->
+                    <text x="450" y="25" text-anchor="middle" class="label" font-size="18">Original List</text>
+                    
+                    <!-- Original List -->
+                    <!-- Node 0: Data = 10 -->
+                    <rect x="50" y="50" width="120" height="80" rx="10" class="node"/>
+                    <rect x="60" y="60" width="30" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <rect x="100" y="60" width="60" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <text x="75" y="95" text-anchor="middle" class="pointer-text">prev</text>
+                    <text x="130" y="95" text-anchor="middle" class="node-data">10</text>
+                    <text x="110" y="150" text-anchor="middle" class="position-label">pos 0</text>
+                    
+                    <!-- Node 1: Data = 20 (TO BE DELETED) -->
+                    <rect x="240" y="50" width="120" height="80" rx="10" class="node"/>
+                    <rect x="250" y="60" width="30" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <rect x="290" y="60" width="60" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <text x="265" y="95" text-anchor="middle" class="pointer-text">prev</text>
+                    <text x="320" y="95" text-anchor="middle" class="node-data">20</text>
+                    <text x="300" y="150" text-anchor="middle" class="position-label">pos 1</text>
+                    
+                    <!-- Node 2: Data = 30 -->
+                    <rect x="430" y="50" width="120" height="80" rx="10" class="node"/>
+                    <rect x="440" y="60" width="30" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <rect x="480" y="60" width="60" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <text x="455" y="95" text-anchor="middle" class="pointer-text">prev</text>
+                    <text x="510" y="95" text-anchor="middle" class="node-data">30</text>
+                    <text x="490" y="150" text-anchor="middle" class="position-label">pos 2</text>
+                    
+                    <!-- Node 3: Data = 40 -->
+                    <rect x="620" y="50" width="120" height="80" rx="10" class="node"/>
+                    <rect x="630" y="60" width="30" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <rect x="670" y="60" width="60" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <text x="645" y="95" text-anchor="middle" class="pointer-text">prev</text>
+                    <text x="700" y="95" text-anchor="middle" class="node-data">40</text>
+                    <text x="680" y="150" text-anchor="middle" class="position-label">pos 3</text>
+                    
+                    <!-- Forward arrows -->
+                    <path d="M 170 90 L 230 90" class="arrow" marker-end="url(#arrowhead)"/>
+                    <path d="M 360 90 L 420 90" class="arrow" marker-end="url(#arrowhead)"/>
+                    <path d="M 550 90 L 610 90" class="arrow" marker-end="url(#arrowhead)"/>
+                    
+                    <!-- Backward arrows -->
+                    <path d="M 240 90 L 180 90" class="arrow" marker-end="url(#arrowhead)"/>
+                    <path d="M 430 90 L 370 90" class="arrow" marker-end="url(#arrowhead)"/>
+                    <path d="M 620 90 L 560 90" class="arrow" marker-end="url(#arrowhead)"/>
+                    
+                    <!-- NULL pointers -->
+                    <text x="30" y="95" text-anchor="middle" class="pointer-text">NULL</text>
+                    <text x="760" y="95" text-anchor="middle" class="pointer-text">NULL</text>
+                    
+                    <!-- After Deletion Title -->
+                    <text x="450" y="200" text-anchor="middle" class="label" font-size="18">After Deleting Element at Position 1</text>
+                    
+                    <!-- After List -->
+                    <!-- Node 0: Data = 10 -->
+                    <rect x="100" y="225" width="120" height="80" rx="10" class="node"/>
+                    <rect x="110" y="235" width="30" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <rect x="150" y="235" width="60" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <text x="125" y="270" text-anchor="middle" class="pointer-text">prev</text>
+                    <text x="180" y="270" text-anchor="middle" class="node-data">10</text>
+                    
+                    <!-- Deleted Node (shown faded) -->
+                    <rect x="290" y="225" width="120" height="80" rx="10" class="deleted-node"/>
+                    <rect x="300" y="235" width="30" height="60" rx="5" fill="#ffb3b3" stroke="#d63031" opacity="0.6"/>
+                    <rect x="340" y="235" width="60" height="60" rx="5" fill="#ffb3b3" stroke="#d63031" opacity="0.6"/>
+                    <text x="315" y="270" text-anchor="middle" class="pointer-text" opacity="0.6">prev</text>
+                    <text x="370" y="270" text-anchor="middle" class="node-data" opacity="0.6">20</text>
+                    <text x="350" y="320" text-anchor="middle" fill="#d63031" font-weight="bold">DELETED</text>
+                    
+                    <!-- Node 2: Data = 30 -->
+                    <rect x="480" y="225" width="120" height="80" rx="10" class="node"/>
+                    <rect x="490" y="235" width="30" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <rect x="530" y="235" width="60" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <text x="505" y="270" text-anchor="middle" class="pointer-text">prev</text>
+                    <text x="560" y="270" text-anchor="middle" class="node-data">30</text>
+                    
+                    <!-- Node 3: Data = 40 -->
+                    <rect x="670" y="225" width="120" height="80" rx="10" class="node"/>
+                    <rect x="680" y="235" width="30" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <rect x="720" y="235" width="60" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <text x="695" y="270" text-anchor="middle" class="pointer-text">prev</text>
+                    <text x="750" y="270" text-anchor="middle" class="node-data">40</text>
+                    
+                    <!-- New connection arrows (bypassing deleted node) -->
+                    <path d="M 220 265 L 470 265" class="highlight-arrow" marker-end="url(#arrowhead-green)" stroke-dasharray="8,4"/>
+                    <path d="M 480 265 L 230 265" class="highlight-arrow" marker-end="url(#arrowhead-green)" stroke-dasharray="8,4"/>
+                    
+                    <!-- Regular arrows -->
+                    <path d="M 600 265 L 660 265" class="arrow" marker-end="url(#arrowhead)"/>
+                    <path d="M 670 265 L 610 265" class="arrow" marker-end="url(#arrowhead)"/>
+                    
+                    <!-- NULL pointers -->
+                    <text x="80" y="270" text-anchor="middle" class="pointer-text">NULL</text>
+                    <text x="810" y="270" text-anchor="middle" class="pointer-text">NULL</text>
+                </svg>
+            </div>
+            
+            <div class="step-description">
+                <strong>Steps:</strong><br>
+                1. Traverse to the node at position 1 (node with data 20)<br>
+                2. Store references to the previous node (pos 0) and next node (pos 2)<br>
+                3. Update the <code>next</code> pointer of the previous node to point to the next node<br>
+                4. Update the <code>prev</code> pointer of the next node to point to the previous node<br>
+                5. Free the memory of the deleted node (shown faded in diagram)
+            </div>
+            
+            <div class="complexity">
+                <strong>Time Complexity:</strong> O(n) - where n is the position<br>
+                <strong>Space Complexity:</strong> O(1)
+            </div>
+        </div>
+        
+        <!-- Operation 3: Print Size -->
+        <div class="operation-card">
+            <h2 class="operation-title">3. Print the Size of the List</h2>
+            
+            <div class="diagram-container">
+                <svg viewBox="0 0 900 350" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Title -->
+                    <text x="450" y="25" text-anchor="middle" class="label" font-size="18">Counting Nodes in the List</text>
+                    
+                    <!-- Node 0 -->
+                    <rect x="50" y="80" width="120" height="80" rx="10" class="node"/>
+                    <rect x="60" y="90" width="30" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <rect x="100" y="90" width="60" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <text x="75" y="125" text-anchor="middle" class="pointer-text">prev</text>
+                    <text x="130" y="125" text-anchor="middle" class="node-data">10</text>
+                    <circle cx="110" cy="60" r="18" fill="#00b894" stroke="#00916e" stroke-width="2"/>
+                    <text x="110" y="67" text-anchor="middle" fill="white" font-weight="bold" font-size="16">1</text>
+                    
+                    <!-- Node 1 -->
+                    <rect x="240" y="80" width="120" height="80" rx="10" class="node"/>
+                    <rect x="250" y="90" width="30" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <rect x="290" y="90" width="60" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <text x="265" y="125" text-anchor="middle" class="pointer-text">prev</text>
+                    <text x="320" y="125" text-anchor="middle" class="node-data">20</text>
+                    <circle cx="300" cy="60" r="18" fill="#00b894" stroke="#00916e" stroke-width="2"/>
+                    <text x="300" y="67" text-anchor="middle" fill="white" font-weight="bold" font-size="16">2</text>
+                    
+                    <!-- Node 2 -->
+                    <rect x="430" y="80" width="120" height="80" rx="10" class="node"/>
+                    <rect x="440" y="90" width="30" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <rect x="480" y="90" width="60" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <text x="455" y="125" text-anchor="middle" class="pointer-text">prev</text>
+                    <text x="510" y="125" text-anchor="middle" class="node-data">30</text>
+                    <circle cx="490" cy="60" r="18" fill="#00b894" stroke="#00916e" stroke-width="2"/>
+                    <text x="490" y="67" text-anchor="middle" fill="white" font-weight="bold" font-size="16">3</text>
+                    
+                    <!-- Node 3 -->
+                    <rect x="620" y="80" width="120" height="80" rx="10" class="node"/>
+                    <rect x="630" y="90" width="30" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <rect x="670" y="90" width="60" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <text x="645" y="125" text-anchor="middle" class="pointer-text">prev</text>
+                    <text x="700" y="125" text-anchor="middle" class="node-data">40</text>
+                    <circle cx="680" cy="60" r="18" fill="#00b894" stroke="#00916e" stroke-width="2"/>
+                    <text x="680" y="67" text-anchor="middle" fill="white" font-weight="bold" font-size="16">4</text>
+                    
+                    <!-- Forward arrows -->
+                    <path d="M 170 120 L 230 120" class="arrow" marker-end="url(#arrowhead)"/>
+                    <path d="M 360 120 L 420 120" class="arrow" marker-end="url(#arrowhead)"/>
+                    <path d="M 550 120 L 610 120" class="arrow" marker-end="url(#arrowhead)"/>
+                    
+                    <!-- Backward arrows -->
+                    <path d="M 240 120 L 180 120" class="arrow" marker-end="url(#arrowhead)"/>
+                    <path d="M 430 120 L 370 120" class="arrow" marker-end="url(#arrowhead)"/>
+                    <path d="M 620 120 L 560 120" class="arrow" marker-end="url(#arrowhead)"/>
+                    
+                    <!-- NULL pointers -->
+                    <text x="30" y="125" text-anchor="middle" class="pointer-text">NULL</text>
+                    <text x="760" y="125" text-anchor="middle" class="pointer-text">NULL</text>
+                    
+                    <!-- Head and Tail labels -->
+                    <text x="110" y="200" text-anchor="middle" fill="#e17055" font-weight="bold" font-size="14">HEAD</text>
+                    <text x="680" y="200" text-anchor="middle" fill="#e17055" font-weight="bold" font-size="14">TAIL</text>
+                    
+                    <!-- Result box -->
+                    <rect x="300" y="240" width="300" height="70" rx="10" fill="#667eea" stroke="#5568d3" stroke-width="3"/>
+                    <text x="450" y="265" text-anchor="middle" fill="white" font-size="16" font-weight="600">Size Calculation Result:</text>
+                    <text x="450" y="295" text-anchor="middle" fill="white" font-size="32" font-weight="bold">SIZE = 4</text>
+                </svg>
+            </div>
+            
+            <div class="step-description">
+                <strong>Algorithm:</strong><br>
+                1. Initialize a counter variable <code>count = 0</code><br>
+                2. Start from the head node<br>
+                3. Traverse through each node until reaching NULL<br>
+                4. Increment the counter for each node visited<br>
+                5. Return the final count value
+            </div>
+            
+            <div class="complexity">
+                <strong>Time Complexity:</strong> O(n) - must traverse all n nodes<br>
+                <strong>Space Complexity:</strong> O(1) - only uses a counter variable<br>
+                <strong>Note:</strong> Some implementations maintain a size variable that's updated during insertion/deletion for O(1) size retrieval
+            </div>
+        </div>
+        
+        <!-- Operation 4: Print List -->
+        <div class="operation-card">
+            <h2 class="operation-title">4. Print the List (Forward and Backward Traversal)</h2>
+            
+            <div class="diagram-container">
+                <svg viewBox="0 0 900 500" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <marker id="arrowhead-orange" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                            <polygon points="0 0, 10 3, 0 6" fill="#ff9800"/>
+                        </marker>
+                    </defs>
+                    
+                    <!-- Title -->
+                    <text x="450" y="25" text-anchor="middle" class="label" font-size="18">Doubly Linked List Traversal</text>
+                    
+                    <!-- Nodes -->
+                    <!-- Node 0 -->
+                    <rect x="50" y="120" width="120" height="80" rx="10" class="node"/>
+                    <rect x="60" y="130" width="30" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <rect x="100" y="130" width="60" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <text x="75" y="165" text-anchor="middle" class="pointer-text">prev</text>
+                    <text x="130" y="165" text-anchor="middle" class="node-data">10</text>
+                    
+                    <!-- Node 1 -->
+                    <rect x="240" y="120" width="120" height="80" rx="10" class="node"/>
+                    <rect x="250" y="130" width="30" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <rect x="290" y="130" width="60" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <text x="265" y="165" text-anchor="middle" class="pointer-text">prev</text>
+                    <text x="320" y="165" text-anchor="middle" class="node-data">20</text>
+                    
+                    <!-- Node 2 -->
+                    <rect x="430" y="120" width="120" height="80" rx="10" class="node"/>
+                    <rect x="440" y="130" width="30" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <rect x="480" y="130" width="60" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <text x="455" y="165" text-anchor="middle" class="pointer-text">prev</text>
+                    <text x="510" y="165" text-anchor="middle" class="node-data">30</text>
+                    
+                    <!-- Node 3 -->
+                    <rect x="620" y="120" width="120" height="80" rx="10" class="node"/>
+                    <rect x="630" y="130" width="30" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <rect x="670" y="130" width="60" height="60" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+                    <text x="645" y="165" text-anchor="middle" class="pointer-text">prev</text>
+                    <text x="700" y="165" text-anchor="middle" class="node-data">40</text>
+                    
+                    <!-- Forward arrows -->
+                    <path d="M 170 160 L 230 160" class="arrow" marker-end="url(#arrowhead)"/>
+                    <path d="M 360 160 L 420 160" class="arrow" marker-end="url(#arrowhead)"/>
+                    <path d="M 550 160 L 610 160" class="arrow" marker-end="url(#arrowhead)"/>
+                    
+                    <!-- Backward arrows -->
+                    <path d="M 240 160 L 180 160" class="arrow" marker-end="url(#arrowhead)"/>
+                    <path d="M 430 160 L 370 160" class="arrow" marker-end="url(#arrowhead)"/>
+                    <path d="M 620 160 L 560 160" class="arrow" marker-end="url(#arrowhead)"/>
+                    
+                    <!-- NULL pointers -->
+                    <text x="30" y="165" text-anchor="middle" class="pointer-text">NULL</text>
+                    <text x="760" y="165" text-anchor="middle" class="pointer-text">NULL</text>
+                    
+                    <!-- Forward Traversal -->
+                    <text x="110" y="250" text-anchor="middle" fill="#00b894" font-weight="bold" font-size="16">HEAD</text>
+                    
+                    <!-- Forward traversal path -->
+                    <path d="M 110 230 L 110 210" stroke="#00b894" stroke-width="3" marker-end="url(#arrowhead-green)"/>
+                    <path d="M 300 230 L 300 210" stroke="#00b894" stroke-width="3" marker-end="url(#arrowhead-green)"/>
+                    <path d="M 490 230 L 490 210" stroke="#00b894" stroke-width="3" marker-end="url(#arrowhead-green)"/>
+                    <path d="M 680 230 L 680 210" stroke="#00b894" stroke-width="3" marker-end="url(#arrowhead-green)"/>
+                    
+                    <text x="110" y="270" text-anchor="middle" fill="#00b894" font-weight="bold">→</text>
+                    <text x="300" y="270" text-anchor="middle" fill="#00b894" font-weight="bold">→</text>
+                    <text x="490" y="270" text-anchor="middle" fill="#00b894" font-weight="bold">→</text>
+                    <text x="680" y="270" text-anchor="middle" fill="#00b894" font-weight="bold">→</text>
+                    
+                    <!-- Forward output -->
+                    <rect x="200" y="290" width="500" height="50" rx="10" fill="#e8f8f5" stroke="#00b894" stroke-width="2"/>
+                    <text x="220" y="315" fill="#00b894" font-weight="bold" font-size="14">Forward Traversal:</text>
+                    <text x="220" y="335" fill="#2d3436" font-size="16" font-family="Courier New">10 ⇄ 20 ⇄ 30 ⇄ 40</text>
+                    
+                    <!-- Backward Traversal -->
+                    <text x="680" y="380" text-anchor="middle" fill="#ff9800" font-weight="bold" font-size="16">TAIL</text>
+                    
+                    <!-- Backward traversal path -->
+                    <path d="M 680 360 L 680 200" stroke="#ff9800" stroke-width="3" marker-end="url(#arrowhead-orange)"/>
+                    <path d="M 490 360 L 490 200" stroke="#ff9800" stroke-width="3" marker-end="url(#arrowhead-orange)"/>
+                    <path d="M 300 360 L 300 200" stroke="#ff9800" stroke-width="3" marker-end="url(#arrowhead-orange)"/>
+                    <path d="M 110 360 L 110 200" stroke="#ff9800" stroke-width="3" marker-end="url(#arrowhead-orange)"/>
+                    
+                    <text x="680" y="400" text-anchor="middle" fill="#ff9800" font-weight="bold">←</text>
+                    <text x="490" y="400" text-anchor="middle" fill="#ff9800" font-weight="bold">←</text>
+                    <text x="300" y="400" text-anchor="middle" fill="#ff9800" font-weight="bold">←</text>
+                    <text x="110" y="400" text-anchor="middle" fill="#ff9800" font-weight="bold">←</text>
+                    
+                    <!-- Backward output -->
+                    <rect x="200" y="420" width="500" height="50" rx="10" fill="#fff8e1" stroke="#ff9800" stroke-width="2"/>
+                    <text x="220" y="445" fill="#ff9800" font-weight="bold" font-size="14">Backward Traversal:</text>
+                    <text x="220" y="465" fill="#2d3436" font-size="16" font-family="Courier New">40 ⇄ 30 ⇄ 20 ⇄ 10</text>
+                </svg>
+            </div>
+            
+            <div class="step-description">
+                <strong>Forward Traversal (Head → Tail):</strong><br>
+                1. Start at the head node<br>
+                2. Print the current node's data<br>
+                3. Move to the next node using the <code>next</code> pointer<br>
+                4. Repeat until reaching NULL<br>
+                <br>
+                <strong>Backward Traversal (Tail → Head):</strong><br>
+                1. Start at the tail node<br>
+                2. Print the current node's data<br>
+                3. Move to the previous node using the <code>prev</code> pointer<br>
+                4. Repeat until reaching NULL
+            </div>
+            
+            <div class="complexity">
+                <strong>Time Complexity:</strong> O(n) - visits each node once<br>
+                <strong>Space Complexity:</strong> O(1) - only uses a traversal pointer<br>
+                <strong>Advantage:</strong> Unlike singly linked lists, doubly linked lists can be traversed in both directions efficiently
+            </div>
+        </div>
+        
+    </div>
+</body>
+</html>
